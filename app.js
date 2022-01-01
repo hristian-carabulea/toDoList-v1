@@ -1,86 +1,59 @@
 // jshint esversion: 6
 const express = require("express");
-const bodyParser = require("body-parser");
-
+const bodyParser = require("body-parser"); // in connection with app post
 require("./config");
-
 const app = express();
+var items = []; 
+var item = "";
 
-app.set('view engine', 'ejs');
+
+app.set('view engine', 'ejs'); //use ejs as the view engine. Must be placed under the creation of the express app.
+
+app.use(bodyParser.urlencoded({extended: true})); // in connection with app post
 
 app.get("/", function (req, res) {
 
-  var today = new Date();
-  var currentDay = today.getDay();
   var day = "";
+  var year = "";
+  var today  = new Date();
 
-  // ************* replaced if else with switch below **************//
+// var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }; 
+  var options = { 
+    weekday: 'long', 
+    day: 'numeric',
+    month: 'long'
+  };
 
-  /* 
-    if (currentDay === 0){
-      day = "Sunday";
-      // res.send("<h3>Hooray, it is a weekend day!</h3>");
-    }
-    else if (currentDay === 1){
-      day = "Monday";
-      // res.send("<h3>Hooray, it is a weekend day!</h3>");
-    }
-    else if (currentDay === 2){
-      day = "Tuesday";
-      // res.send("<h3>Hooray, it is a weekend day!</h3>");
-    }
-    else if (currentDay === 3){
-      day = "Wednesday";
-      // res.send("<h3>Hooray, it is a weekend day!</h3>");
-    }
-    else if (currentDay === 4){
-      day = "Thursday";
-      // res.send("<h3>Hooray, it is a weekend day!</h3>");
-    }
-    else if (currentDay === 5){
-      day = "Friday";
-      // res.send("<h3>Hooray, it is a weekend day!</h3>");
-    }
-    else {
-      day = "Saturday";
-      // res.send("<h3>Boo! Today is a weekday. So, I have to go to work again!</h3>")
-      // res.write("<h3>Boo! Today is a weekday.</h3>");
-      // res.write("<h3>So, I have to go to work again!</h3>");
-      // res.send();
-      // res.sendFile(__dirname + "/index.html");
-    }
-     */
+  day = today.toLocaleDateString("en-US", options);
 
-  switch (currentDay) {
-    case 0:
-      day = "Sunday";
-      break;
-    case 1:
-      day = "Monday";
-      break;
-    case 2:
-      day = "Tuesday";
-      break;
-    case 3:
-      day = "Wednesday";
-      break;
-    case 4:
-      day = "Thursday";
-      break;
-    case 5:
-      day = "Friday";
-      break;
-    case 6:
-      day = "Saturday";
-      break;
-    default:
-      day = "Error"
-  }
+  var options = { 
+    year: 'numeric'
+  };
+
+  year = today.toLocaleDateString("en-US", options);
+  // console.log(day);
+
   res.render('list', {
-    kindOfDay: day
+    kindOfDay: day,
+    kindOfYear: year,
+    listOfItems: items
   });
 
 }); // end app.get("/", function(req, res)
+
+app.post("/", function(req, res){
+
+  item = req.body.newItem; 
+  
+  items.push(item);
+
+  console.log(item);
+  res.redirect("/");
+
+  // request.write(newItem);
+  // request.end();
+
+}); // end app.post
 
 
 // app.listen(3000, function() { // for local development
