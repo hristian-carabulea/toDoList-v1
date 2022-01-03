@@ -4,3 +4,5 @@
 ### npm init
 ### npm i express body-parser ejs
 
+## Using module exports
+### in date.js

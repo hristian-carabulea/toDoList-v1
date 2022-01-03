@@ -1,11 +1,14 @@
 // jshint esversion: 6
 const express = require("express");
 const bodyParser = require("body-parser"); // in connection with app post
-const { application } = require("express");
+const date = require(__dirname + "/date.js");
+
+// console.log(date());
+// const { application } = require("express");
 require("./config");
 const app = express();
 let items = ["Buy food", "Cook food"]; 
-var item = "";
+let item = "";
 let workItems = [];
 
 app.set('view engine', 'ejs'); //use ejs as the view engine. Must be placed under the creation of the express app.
@@ -15,34 +18,20 @@ app.use(bodyParser.urlencoded({extended: true})); // in connection with app post
 app.use(express.static("public"));
 
 app.get("/", function (req, res) {
-  let today  = new Date();
-  var options = { weekday: 'long', day: 'numeric', month: 'long' };
-  let day = today.toLocaleDateString("en-US", options);
-
-  var options = { year: 'numeric' };
-  let year = today.toLocaleDateString("en-US", options);
+  let day = date("day");
+  let year = date("year");
   // console.log(day);
   res.render('list', { listTitle: day, newListItems: items, copyrightYear: year });
 }); // end app.get("/", function(req, res)
 
 app.get("/work", function(req, res){
-  let today  = new Date();
-  var options = { weekday: 'long', day: 'numeric', month: 'long' };
-  let day = today.toLocaleDateString("en-US", options);
-
-  var options = { year: 'numeric' };
-  let year = today.toLocaleDateString("en-US", options);
+  let year = date("year");
   // console.log(day);
   res.render("list", {listTitle: "Work List", newListItems: workItems, copyrightYear: year})
 });
 
 app.get("/about", function(req, res){
-  let today  = new Date();
-  var options = { weekday: 'long', day: 'numeric', month: 'long' };
-  let day = today.toLocaleDateString("en-US", options);
-
-  var options = { year: 'numeric' };
-  let year = today.toLocaleDateString("en-US", options);
+  let year = date("year");
   // console.log(day);
   res.render("about", {copyrightYear: year})
 });
