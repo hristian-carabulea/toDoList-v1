@@ -1,60 +1,65 @@
 // jshint esversion: 6
 const express = require("express");
 const bodyParser = require("body-parser"); // in connection with app post
+const { application } = require("express");
 require("./config");
 const app = express();
-var items = []; 
+let items = ["Buy food", "Cook food"]; 
 var item = "";
-
+let workItems = [];
 
 app.set('view engine', 'ejs'); //use ejs as the view engine. Must be placed under the creation of the express app.
 
 app.use(bodyParser.urlencoded({extended: true})); // in connection with app post
 
+app.use(express.static("public"));
+
 app.get("/", function (req, res) {
+  let today  = new Date();
+  var options = { weekday: 'long', day: 'numeric', month: 'long' };
+  let day = today.toLocaleDateString("en-US", options);
 
-  var day = "";
-  var year = "";
-  var today  = new Date();
-
-// var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }; 
-  var options = { 
-    weekday: 'long', 
-    day: 'numeric',
-    month: 'long'
-  };
-
-  day = today.toLocaleDateString("en-US", options);
-
-  var options = { 
-    year: 'numeric'
-  };
-
-  year = today.toLocaleDateString("en-US", options);
+  var options = { year: 'numeric' };
+  let year = today.toLocaleDateString("en-US", options);
   // console.log(day);
-
-  res.render('list', {
-    kindOfDay: day,
-    kindOfYear: year,
-    listOfItems: items
-  });
-
+  res.render('list', { listTitle: day, newListItems: items, copyrightYear: year });
 }); // end app.get("/", function(req, res)
 
+app.get("/work", function(req, res){
+  let today  = new Date();
+  var options = { weekday: 'long', day: 'numeric', month: 'long' };
+  let day = today.toLocaleDateString("en-US", options);
+
+  var options = { year: 'numeric' };
+  let year = today.toLocaleDateString("en-US", options);
+  // console.log(day);
+  res.render("list", {listTitle: "Work List", newListItems: workItems, copyrightYear: year})
+});
+
+app.get("/about", function(req, res){
+  let today  = new Date();
+  var options = { weekday: 'long', day: 'numeric', month: 'long' };
+  let day = today.toLocaleDateString("en-US", options);
+
+  var options = { year: 'numeric' };
+  let year = today.toLocaleDateString("en-US", options);
+  // console.log(day);
+  res.render("about", {copyrightYear: year})
+});
+
 app.post("/", function(req, res){
-
-  item = req.body.newItem; 
-  
-  items.push(item);
-
-  console.log(item);
-  res.redirect("/");
-
-  // request.write(newItem);
-  // request.end();
+  let item = req.body.newItem; 
+  console.log(req.body.list);
+  if (req.body.list === "Work List") {
+    workItems.push(item);
+    res.redirect("/work");
+  }
+  else {
+    items.push(item);
+    res.redirect("/");
+  }
 
 }); // end app.post
-
 
 // app.listen(3000, function() { // for local development
 app.listen(process.env.PORT || 3000, function () { // for use with Heroku or other server providers and local server
