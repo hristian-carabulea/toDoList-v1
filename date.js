@@ -8,16 +8,12 @@ function getDate(kindOfDate) {
 
   if (kindOfDate === "day") {
     let options = { weekday: 'long', day: 'numeric', month: 'long' };
-    let day = today.toLocaleDateString("en-US", options);
-    (console.log(day));
-    return day;
+    return today.toLocaleDateString("en-US", options);
   }
 
   else if (kindOfDate === "year") {
     let options = { year: 'numeric' };
-    let year = today.toLocaleDateString("en-US", options);
-    (console.log(year));
-    return year;
+    return today.toLocaleDateString("en-US", options);
   }
 
   else return 666;  
